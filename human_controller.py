@@ -1,4 +1,5 @@
 from controller import Controller
+import pygame
 
 
 class HumanController(Controller):
@@ -6,4 +7,15 @@ class HumanController(Controller):
     @return
     """
     def process_response(self):
-        pass
+        keys = pygame.key.get_pressed()
+        x, y = 0, 0
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            x = -1
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            x = 1
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            y = -1
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            y = 1
+
+        return y, x

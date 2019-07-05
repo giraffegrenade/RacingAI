@@ -1,8 +1,8 @@
 import pygame
 from game import Game
 
-SIZE_X = 1000
-SIZE_Y = 600
+SIZE_X = 1500
+SIZE_Y = 700
 
 if __name__ == '__main__':
     pygame.font.init()
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     
         keys = pygame.key.get_pressed()
 
-        game.tick()
+        game.tick(keys)
         game.draw(foreground)
 
         screen.fill((60, 70, 90))

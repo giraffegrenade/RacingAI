@@ -1,5 +1,6 @@
 from math import *
 from numbers import Number
+from util import *
 
 
 class Vector:
@@ -22,10 +23,28 @@ class Vector:
         return hypot(self.x, self.y)
 
     def get_x(self):
-        return cos(self.x) * self.mag
+        return cos(self.dir) * self.mag
 
     def get_y(self):
-        return sin(self.y) * self.mag
+        return sin(self.dir) * self.mag
+
+    def set_dir(self, value):
+        self.dir = value
+        self.mag = self.get_mag()
+        self.x = self.get_x()
+        self.y = self.get_y()
+
+    def set_mag(self, value):
+        self.mag = value
+        self.dir = self.get_dir()
+        self.x = self.get_x()
+        self.y = self.get_y()
+
+    def normalize(self):
+        return Vector(cos(self.dir), sin(self.dir))
+
+    def clamp(self, mag):
+        return mag * self.normalize()
 
     def __add__(self, other):
         return Vector(self.x+other.x, self.y+other.y)
@@ -39,5 +58,15 @@ class Vector:
         else:
             raise Exception("Not a valid multiplication scalar for Vectors")
 
+    def __rmul__(self, other):
+        if isinstance(other, Number):
+            return Vector(self.x*other, self.y*other)
+        else:
+            raise Exception("Not a valid multiplication scalar for Vectors")
+
     def __str__(self):
         return "Vector({}, {})".format(self.x, self.y)
+
+    def __iter__(self):
+        yield self.x
+        yield self.y
