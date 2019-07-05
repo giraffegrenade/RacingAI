@@ -1,4 +1,5 @@
 import pygame
+from game import Game
 
 SIZE_X = 1000
 SIZE_Y = 600
@@ -6,7 +7,7 @@ SIZE_Y = 600
 if __name__ == '__main__':
     pygame.font.init()
     pygame.init()
-    pygame.display.set_caption('pyBullethell')
+    pygame.display.set_caption('racingGame')
 
     screen = pygame.display.set_mode((SIZE_X, SIZE_Y))
     clock = pygame.time.Clock()
