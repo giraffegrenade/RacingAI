@@ -7,12 +7,15 @@ import random
 
 
 class Game:
+    CHECKPOINT_RAD = 10
+
     def __init__(self, size_x, size_y, bg):
         self.size_x = int(size_x)
         self.size_y = int(size_y)
         self.players = [Player(size_x/2, size_y/2, HumanController(), self),
                         Player(size_x/2, size_y/2, HumanController2(), self)]
         self.bg = bg
+        self.checkpoints = []
 
     def tick(self):
         for player in self.players:
@@ -20,11 +23,20 @@ class Game:
 
     def draw(self, surface):
         surface.blit(self.bg, (0, 0))
+        self.draw_checkpoints(surface)
+
         for player in self.players:
             player.draw(surface)
 
+    def draw_checkpoints(self, surface):
+        for checkpoint in self.checkpoints:
+            pygame.draw.circle(surface, pygame.Color("yellow"), checkpoint, Game.CHECKPOINT_RAD)
+
     def is_on_track(self, x, y):
         return self.bg.get_at((int(x), int(y))) == (0, 0, 0, 255)
+
+    def add_checkpoint(self, pos):
+        self.checkpoints.append(pos)
 
 
 class Player:
