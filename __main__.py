@@ -7,13 +7,16 @@ SIZE_Y = 1000
 if __name__ == '__main__':
     pygame.font.init()
     pygame.init()
+
+    pygame.display.set_mode((SIZE_X, SIZE_Y))
+
     pygame.display.set_caption('racingGame')
-    background = pygame.image.load("racetrack.png")
+    background = pygame.image.load("racetrack.png").convert_alpha()
 
     screen = pygame.display.set_mode((SIZE_X, SIZE_Y))
     clock = pygame.time.Clock()
 
-    game = Game(SIZE_X, SIZE_Y)
+    game = Game(SIZE_X, SIZE_Y, background)
     game_exit = False
     while not game_exit:
         for event in pygame.event.get():
@@ -21,7 +24,6 @@ if __name__ == '__main__':
                 game_exit = True
 
         game.tick()
-        screen.blit(background, (0, 0))
         game.draw(screen)
 
         pygame.display.flip()
