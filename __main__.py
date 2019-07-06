@@ -1,13 +1,14 @@
 import pygame
 from game import Game
 
-SIZE_X = 1500
-SIZE_Y = 700
+SIZE_X = 1000
+SIZE_Y = 1000
 
 if __name__ == '__main__':
     pygame.font.init()
     pygame.init()
     pygame.display.set_caption('racingGame')
+    background = pygame.image.load("racetrack.png")
 
     screen = pygame.display.set_mode((SIZE_X, SIZE_Y))
     clock = pygame.time.Clock()
@@ -18,17 +19,11 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_exit = True
-        foreground = pygame.Surface((SIZE_X, SIZE_Y), pygame.SRCALPHA)
-        foreground.fill(pygame.Color('black'))
-    
-        keys = pygame.key.get_pressed()
 
-        game.tick(keys)
-        game.draw(foreground)
+        game.tick()
+        screen.blit(background, (0, 0))
+        game.draw(screen)
 
-        screen.fill((60, 70, 90))
-        screen.blit(foreground, (0, 0))
-        
         pygame.display.flip()
 
         clock.tick(60)
