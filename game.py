@@ -7,7 +7,8 @@ import random
 
 
 class Game:
-    CHECKPOINT_RAD = 10
+    CHECKPOINT_RAD = 30
+    FLICKER_TIME = 200
 
     def __init__(self, size_x, size_y, bg):
         self.size_x = int(size_x)
@@ -16,6 +17,9 @@ class Game:
                         Player(size_x/2, size_y/2, HumanController2(), self)]
         self.bg = bg
         self.checkpoints = []
+
+        self.flickerer = Game.FLICKER_TIME
+        self.shuffled_players = self.players[:]
 
     def tick(self):
         for player in self.players:
@@ -30,13 +34,31 @@ class Game:
 
     def draw_checkpoints(self, surface):
         for checkpoint in self.checkpoints:
-            pygame.draw.circle(surface, pygame.Color("yellow"), checkpoint, Game.CHECKPOINT_RAD)
+            colour = pygame.Color("yellow")
+            self.flickerer -= 1
+            if self.flickerer <= 0:
+                shift(self.shuffled_players)
+                self.flickerer = Game.FLICKER_TIME
+            for player in self.shuffled_players:
+                if player.current_checkpoint == self.checkpoints.index(checkpoint):
+                    colour = player.col
+            pygame.draw.circle(surface, colour, checkpoint, Game.CHECKPOINT_RAD)
 
     def is_on_track(self, x, y):
         return self.bg.get_at((int(x), int(y))) == (0, 0, 0, 255)
 
     def add_checkpoint(self, pos):
         self.checkpoints.append(pos)
+
+    def start(self):
+        if len(self.checkpoints) == 0:
+            raise Exception("No checkpoints added")
+        for player in self.players:
+            player.pos.x = self.checkpoints[0][0]
+            player.pos.y = self.checkpoints[0][1]
+
+    def checkpoint_passed(self, current_checkpoint, pos):
+        return hypot(self.checkpoints[current_checkpoint][0] - pos[0], self.checkpoints[current_checkpoint][1] - pos[1]) < Game.CHECKPOINT_RAD
 
 
 class Player:
@@ -53,7 +75,8 @@ class Player:
         self.controller = controller
         self.game = game
         self.img = pygame.transform.scale(pygame.image.load("car.png").convert_alpha(), (Player.WIDTH, Player.HEIGHT))
-        self.img = tint(self.img, (random.randint(0, 255),random.randint(0, 255),random.randint(0, 1)))
+        self.col = (random.randint(0, 255),random.randint(0, 255),random.randint(0, 255))
+        self.img = tint(self.img, self.col)
         self.v = Vector(0, 0)
         self.dir = 0
         self.speed = 0
@@ -61,6 +84,7 @@ class Player:
         self.w = 1
         self.h = 1
         self.rot_img = self.img
+        self.current_checkpoint = 0
 
     def tick(self):
         # Get controller input
@@ -76,7 +100,7 @@ class Player:
 
         self.v = Vector(self.dir, self.speed, True)
 
-        if self.game.is_on_track(self.pos.x+self.rot_img.get_size()[0]/2, self.pos.y+self.rot_img.get_size()[1]/2):
+        if self.game.is_on_track(*self.get_center()):
             self.speed *= Player.DRAG
         else:
             self.speed *= Player.GRASS_DRAG
@@ -87,6 +111,15 @@ class Player:
 
         self.pos.x = clamp(self.pos.x, 0, self.game.size_x-self.w)
         self.pos.y = clamp(self.pos.y, 0, self.game.size_y-self.h)
+
+        if self.game.checkpoint_passed(self.current_checkpoint, self.get_center()):
+            print(self.current_checkpoint)
+            self.current_checkpoint += 1
+            if self.current_checkpoint == len(self.game.checkpoints):
+                raise Exception("WON")
+
+    def get_center(self):
+        return self.pos.x + self.rot_img.get_size()[0] / 2, self.pos.y + self.rot_img.get_size()[1] / 2
 
     def draw(self, surface):
         self.rot_img = pygame.transform.rotate(self.img, -(self.v.dir/(2*pi))*360)

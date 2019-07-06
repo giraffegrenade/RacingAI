@@ -32,6 +32,7 @@ if __name__ == '__main__':
                     elif event.button == 3:
                         init_state = False
                         game.add_checkpoint(pygame.mouse.get_pos())
+                        game.start()
 
         if not init_state:
             game.tick()

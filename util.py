@@ -13,3 +13,9 @@ def tint(surf, tint_color):
     surf.fill(tint_color[0:3] + (0,), None, pygame.BLEND_RGBA_ADD)
 
     return surf
+
+
+def shift(a):
+    a.append(a[0])
+    del(a[0])
+
