@@ -17,7 +17,7 @@ class Game:
         self.size_x = int(size_x)
         self.size_y = int(size_y)
         self.players = [Player(size_x/2, size_y/2, HumanController(), self),
-                        Player(size_x/2, size_y/2, HumanController2(), self)]
+                        Player(size_x/2, size_y/2, RandomAIController(), self)]
         self.bg = bg
         self.checkpoints = []
 
@@ -113,9 +113,6 @@ class Player:
                 y = dis * sin(ang) + self.get_center()[1]
                 val = self.game.get_track_pixel(int(x), int(y))
                 view.store(d, v, val)
-
-        print(view.vals)
-
 
         # Get controller input
         linear_acc, angular_acc = self.controller.process_response(self.pos,

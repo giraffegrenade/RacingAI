@@ -1,5 +1,3 @@
-
-
 class View:
     def __init__(self, distance, width, amount, speed):
         self.distance = distance
@@ -10,3 +8,6 @@ class View:
 
     def store(self, dir_index, distance_index, val):
         self.vals[dir_index][distance_index] = val
+
+    def __str__(self):
+        return str(self.vals)
