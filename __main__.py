@@ -1,17 +1,20 @@
 import pygame
+import ctypes
 from game import Game
 
 SIZE_X = 1000
 SIZE_Y = 1000
 
 if __name__ == '__main__':
+    ctypes.windll.user32.SetProcessDPIAware()
+
     pygame.font.init()
     pygame.init()
 
     pygame.display.set_mode((SIZE_X, SIZE_Y))
 
     pygame.display.set_caption('racingGame')
-    background = pygame.image.load("racetrack2.png").convert_alpha()
+    background = pygame.image.load("racetrack3.png").convert_alpha()
 
     screen = pygame.display.set_mode((SIZE_X, SIZE_Y))
     clock = pygame.time.Clock()

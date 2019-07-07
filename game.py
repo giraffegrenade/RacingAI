@@ -1,5 +1,6 @@
 import pygame
 from human_controller import *
+from random_ai import RandomAIController
 from vector import Vector
 from util import *
 from math import *
@@ -54,8 +55,8 @@ class Game:
         if len(self.checkpoints) == 0:
             raise Exception("No checkpoints added")
         for player in self.players:
-            player.pos.x = self.checkpoints[0][0]
-            player.pos.y = self.checkpoints[0][1]
+            player.pos.x = self.checkpoints[0][0] - Game.CHECKPOINT_RAD
+            player.pos.y = self.checkpoints[0][1] - Game.CHECKPOINT_RAD
 
     def checkpoint_passed(self, current_checkpoint, pos):
         return hypot(self.checkpoints[current_checkpoint][0] - pos[0], self.checkpoints[current_checkpoint][1] - pos[1]) < Game.CHECKPOINT_RAD
@@ -75,7 +76,7 @@ class Player:
         self.controller = controller
         self.game = game
         self.img = pygame.transform.scale(pygame.image.load("car.png").convert_alpha(), (Player.WIDTH, Player.HEIGHT))
-        self.col = (random.randint(0, 255),random.randint(0, 255),random.randint(0, 255))
+        self.col = (random.randint(25, 225), random.randint(25, 225), random.randint(25, 225))
         self.img = tint(self.img, self.col)
         self.v = Vector(0, 0)
         self.dir = 0
@@ -88,7 +89,8 @@ class Player:
 
     def tick(self):
         # Get controller input
-        linear_acc, angular_acc = self.controller.process_response()
+        linear_acc, angular_acc = self.controller.process_response(self.pos,
+                                                                   self.game.checkpoints[self.current_checkpoint])
         linear_acc = clamp(linear_acc, -Player.MAX_LIN_ACC, Player.MAX_LIN_ACC)
         angular_acc = clamp(angular_acc, -Player.MAX_ANG_ACC, Player.MAX_ANG_ACC)
 
@@ -113,10 +115,9 @@ class Player:
         self.pos.y = clamp(self.pos.y, 0, self.game.size_y-self.h)
 
         if self.game.checkpoint_passed(self.current_checkpoint, self.get_center()):
-            print(self.current_checkpoint)
             self.current_checkpoint += 1
             if self.current_checkpoint == len(self.game.checkpoints):
-                raise Exception("WON")
+                raise Exception("PLAYER " + str(self.col) + " WON")
 
     def get_center(self):
         return self.pos.x + self.rot_img.get_size()[0] / 2, self.pos.y + self.rot_img.get_size()[1] / 2
