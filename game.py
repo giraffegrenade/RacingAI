@@ -2,14 +2,16 @@ import pygame
 from human_controller import *
 from random_ai import RandomAIController
 from vector import Vector
+from view import View
 from util import *
 from math import *
 import random
-
+from enum import Enum
 
 class Game:
     CHECKPOINT_RAD = 30
     FLICKER_TIME = 200
+    BT = Enum('BT', 'track snow wall')
 
     def __init__(self, size_x, size_y, bg):
         self.size_x = int(size_x)
@@ -46,8 +48,16 @@ class Game:
                     colour = player.col
             pygame.draw.circle(surface, colour, checkpoint, Game.CHECKPOINT_RAD)
 
+    def get_track_pixel(self, x, y):
+        if not in_bounds(x, y, self.size_x, self.size_y):
+            return Game.BT.wall
+        elif self.bg.get_at((int(x), int(y))) == (0, 0, 0, 255):
+            return Game.BT.track
+        else:
+            return Game.BT.snow
+
     def is_on_track(self, x, y):
-        return self.bg.get_at((int(x), int(y))) == (0, 0, 0, 255)
+        return self.get_track_pixel(x, y) == Game.BT.track
 
     def add_checkpoint(self, pos):
         self.checkpoints.append(pos)
@@ -67,7 +77,7 @@ class Player:
     MAX_LIN_ACC = 0.5
     MAX_ANG_ACC = 0.01
     DRAG = 0.93
-    GRASS_DRAG = 0.7
+    SNOW_DRAG = 0.7
     ANG_DRAG = 0.5
     WIDTH = 60
     HEIGHT = 30
@@ -93,13 +103,24 @@ class Player:
         view_distance = self.controller.get_view_distance()
         view_width = self.controller.get_view_width()
         view_amount = self.controller.get_view_amount()
+        view = View(view_distance, view_amount, view_width, self.speed)
 
-        for view in range(view_amount):
-            pass
+        for v in range(view_amount):
+            for d in range(view_width):
+                dis = d * view_distance / view_width
+                ang = v * (2*pi) / view_amount + self.direction
+                x = dis * cos(ang) + self.get_center()[0]
+                y = dis * sin(ang) + self.get_center()[1]
+                val = self.game.get_track_pixel(int(x), int(y))
+                view.store(d, v, val)
+
+        print(view.vals)
+
 
         # Get controller input
         linear_acc, angular_acc = self.controller.process_response(self.pos,
-                                                                   self.game.checkpoints[self.current_checkpoint])
+                                                                   self.game.checkpoints[self.current_checkpoint],
+                                                                   view)
         linear_acc = clamp(linear_acc, -Player.MAX_LIN_ACC, Player.MAX_LIN_ACC)
         angular_acc = clamp(angular_acc, -Player.MAX_ANG_ACC, Player.MAX_ANG_ACC)
 
@@ -114,7 +135,7 @@ class Player:
         if self.game.is_on_track(*self.get_center()):
             self.speed *= Player.DRAG
         else:
-            self.speed *= Player.GRASS_DRAG
+            self.speed *= Player.SNOW_DRAG
 
         # Update velocity
         self.pos += self.v
@@ -136,3 +157,25 @@ class Player:
         self.w = self.rot_img.get_size()[0]
         self.h = self.rot_img.get_size()[1]
         surface.blit(self.rot_img, top_left)
+
+
+        view_distance = self.controller.get_view_distance()
+        view_width = self.controller.get_view_width()
+        view_amount = self.controller.get_view_amount()
+        view = View(view_distance, view_amount, view_width, self.speed)
+
+        for v in range(view_amount):
+            for d in range(view_width):
+                dis = d * view_distance / view_width
+                ang = v * (2*pi) / view_amount + self.direction
+                x = dis * cos(ang) + self.get_center()[0]
+                y = dis * sin(ang) + self.get_center()[1]
+                val = self.game.get_track_pixel(int(x), int(y))
+                col = (0, 0, 0, 255)
+                if val == Game.BT.track:
+                    col = pygame.Color("green")
+                if val == Game.BT.snow:
+                    col = pygame.Color("red")
+                if val == Game.BT.wall:
+                    col = pygame.Color("white")
+                pygame.draw.circle(surface, col, (int(x), int(y)), 5)

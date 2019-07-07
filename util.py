@@ -5,6 +5,10 @@ def clamp(val, lower, upper):
     return max(min(val, upper), lower)
 
 
+def in_bounds(x, y, w, h):
+    return 0 <= x < w and 0 <= y < h
+
+
 def tint(surf, tint_color):
     """ adds tint_color onto surf.
     """

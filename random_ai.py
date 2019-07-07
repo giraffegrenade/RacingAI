@@ -5,7 +5,7 @@ from vector import Vector
 
 
 class RandomAIController(Controller):
-    def process_response(self, pos, next_checkpoint):
+    def process_response(self, pos, next_checkpoint, speed):
         if self.last_x_action == 0:
             self.last_x_action = random.choice((1, -1))
         if self.last_y_action == 0:
