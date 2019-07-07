@@ -32,6 +32,7 @@ class Game:
 
         for player in self.players:
             player.draw(surface)
+            pygame.draw.circle(surface, (0, 0, 0), (int(player.get_center()[0]), int(player.get_center()[1])), 5)
 
     def draw_checkpoints(self, surface):
         for checkpoint in self.checkpoints:
