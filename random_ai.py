@@ -5,12 +5,6 @@ from vector import Vector
 
 
 class RandomAIController(Controller):
-    def __init__(self):
-        self.last_pos = Vector(0, 0)
-        self.last_distance = math.inf
-        self.last_x_action = 0
-        self.last_y_action = 0
-
     def process_response(self, pos, next_checkpoint):
         if self.last_x_action == 0:
             self.last_x_action = random.choice((1, -1))
