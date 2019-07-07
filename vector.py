@@ -6,14 +6,14 @@ from util import *
 class Vector:
     def __init__(self, x, y, polar=False):
         if polar:
-            self.dir = x
+            self.direction = x
             self.mag = y
             self.x = self.get_x()
             self.y = self.get_y()
         else:
             self.x = x
             self.y = y
-            self.dir = self.get_dir()
+            self.direction = self.get_dir()
             self.mag = self.get_mag()
 
     def get_dir(self):
@@ -23,25 +23,25 @@ class Vector:
         return hypot(self.x, self.y)
 
     def get_x(self):
-        return cos(self.dir) * self.mag
+        return cos(self.direction) * self.mag
 
     def get_y(self):
-        return sin(self.dir) * self.mag
+        return sin(self.direction) * self.mag
 
     def set_dir(self, value):
-        self.dir = value
+        self.direction = value
         self.mag = self.get_mag()
         self.x = self.get_x()
         self.y = self.get_y()
 
     def set_mag(self, value):
         self.mag = value
-        self.dir = self.get_dir()
+        self.direction = self.get_dir()
         self.x = self.get_x()
         self.y = self.get_y()
 
     def normalize(self):
-        return Vector(cos(self.dir), sin(self.dir))
+        return Vector(cos(self.direction), sin(self.direction))
 
     def clamp(self, mag):
         return mag * self.normalize()

@@ -80,7 +80,7 @@ class Player:
         self.col = (random.randint(25, 225), random.randint(25, 225), random.randint(25, 225))
         self.img = tint(self.img, self.col)
         self.v = Vector(0, 0)
-        self.dir = 0
+        self.direction = 0
         self.speed = 0
         self.av = 0
         self.w = 1
@@ -89,19 +89,27 @@ class Player:
         self.current_checkpoint = 0
 
     def tick(self):
+        # Get view
+        view_distance = self.controller.get_view_distance()
+        view_width = self.controller.get_view_width()
+        view_amount = self.controller.get_view_amount()
+
+        for view in range(view_amount):
+            pass
+
         # Get controller input
         linear_acc, angular_acc = self.controller.process_response(self.pos,
                                                                    self.game.checkpoints[self.current_checkpoint])
         linear_acc = clamp(linear_acc, -Player.MAX_LIN_ACC, Player.MAX_LIN_ACC)
         angular_acc = clamp(angular_acc, -Player.MAX_ANG_ACC, Player.MAX_ANG_ACC)
 
-        self.v += Vector(self.v.dir, linear_acc, True)
+        self.v += Vector(self.v.direction, linear_acc, True)
         self.av += angular_acc
         self.speed += linear_acc
         self.av *= Player.ANG_DRAG
-        self.dir += -self.av * self.speed
+        self.direction += -self.av * self.speed
 
-        self.v = Vector(self.dir, self.speed, True)
+        self.v = Vector(self.direction, self.speed, True)
 
         if self.game.is_on_track(*self.get_center()):
             self.speed *= Player.DRAG
@@ -123,7 +131,7 @@ class Player:
         return self.pos.x + self.img.get_size()[0] / 2, self.pos.y + self.img.get_size()[1] / 2
 
     def draw(self, surface):
-        self.rot_img = pygame.transform.rotate(self.img, -(self.v.dir/(2*pi))*360)
+        self.rot_img = pygame.transform.rotate(self.img, -(self.v.direction / (2 * pi)) * 360)
         top_left = (self.pos.x - (self.rot_img.get_size()[0] - self.img.get_size()[0])/2, self.pos.y - (self.rot_img.get_size()[1] - self.img.get_size()[1])/2)
         self.w = self.rot_img.get_size()[0]
         self.h = self.rot_img.get_size()[1]
