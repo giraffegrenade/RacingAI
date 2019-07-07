@@ -108,7 +108,6 @@ class Player:
         else:
             self.speed *= Player.GRASS_DRAG
 
-
         # Update velocity
         self.pos += self.v
 
@@ -121,7 +120,7 @@ class Player:
                 raise Exception("PLAYER " + str(self.col) + " WON")
 
     def get_center(self):
-        return self.pos.x + self.rot_img.get_size()[0] / 2, self.pos.y + self.rot_img.get_size()[1] / 2
+        return self.pos.x + self.img.get_size()[0] / 2, self.pos.y + self.img.get_size()[1] / 2
 
     def draw(self, surface):
         self.rot_img = pygame.transform.rotate(self.img, -(self.v.dir/(2*pi))*360)
