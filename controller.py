@@ -6,7 +6,7 @@ class Controller(ABC):
     """
     @return
     """
-    def process_response(self, pos, next_checkpoint, view):
+    def process_response(self, view, distance_next_cp):
         pass
 
     def get_view_distance(self):

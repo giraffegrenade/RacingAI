@@ -6,7 +6,9 @@ class HumanController(Controller):
     """
     @return
     """
-    def process_response(self, pos, next_checkpoint, view):
+    def process_response(self, view, distance_next_cp):
+        print(distance_next_cp)
+
         keys = pygame.key.get_pressed()
         x, y = 0, 0
         if keys[pygame.K_a]:
@@ -25,7 +27,7 @@ class HumanController2(Controller):
     """
     @return
     """
-    def process_response(self, pos, next_checkpoint, view):
+    def process_response(self, view, distance_next_cp):
         keys = pygame.key.get_pressed()
         x, y = 0, 0
         if keys[pygame.K_LEFT]:

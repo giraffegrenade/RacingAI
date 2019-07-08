@@ -14,7 +14,7 @@ class RandomAIController(Controller):
     def __init__(self):
         self.view_distance = RandomAIController.MIN_DISTANCE
 
-    def process_response(self, pos, next_checkpoint, view):
+    def process_response(self, view, distance_next_cp):
         y, x, = -1, 0
 
         forward = view.vals[1][2]
@@ -35,7 +35,6 @@ class RandomAIController(Controller):
         else:
             self.view_distance -= 10
 
-        print(self.view_distance, RandomAIController.REVERSE_THRESHOLD)
         if (self.view_distance >= RandomAIController.REVERSE_THRESHOLD / 2):
             x = 1
             if forward is BT.TRACK:

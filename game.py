@@ -114,9 +114,9 @@ class Player:
                 view.store(d, v, val)
 
         # Get controller input
-        linear_acc, angular_acc = self.controller.process_response(self.pos,
-                                                                   self.game.checkpoints[self.current_checkpoint],
-                                                                   view)
+        next_checkpoint = self.game.checkpoints[self.current_checkpoint]
+        linear_acc, angular_acc = self.controller.process_response(view,
+                                                                   hypot(next_checkpoint[0] - self.pos.x, next_checkpoint[1] - self.pos.y))
         linear_acc = clamp(linear_acc, -Player.MAX_LIN_ACC, Player.MAX_LIN_ACC)
         angular_acc = clamp(angular_acc, -Player.MAX_ANG_ACC, Player.MAX_ANG_ACC)
 
@@ -158,6 +158,8 @@ class Player:
         view_distance = self.controller.get_view_distance()
         view_width = self.controller.get_view_width()
         view_amount = self.controller.get_view_amount()
+
+
         view = View(view_distance, view_amount, view_width, self.speed)
 
         for v in range(view_amount):
