@@ -6,12 +6,11 @@ from view import View
 from util import *
 from math import *
 import random
-from enum import Enum
+from block_types import BT
 
 class Game:
     CHECKPOINT_RAD = 30
     FLICKER_TIME = 200
-    BT = Enum('BT', 'track snow wall')
 
     def __init__(self, size_x, size_y, bg):
         self.size_x = int(size_x)
@@ -50,14 +49,14 @@ class Game:
 
     def get_track_pixel(self, x, y):
         if not in_bounds(x, y, self.size_x, self.size_y):
-            return Game.BT.wall
+            return BT.WALL
         elif self.bg.get_at((int(x), int(y))) == (0, 0, 0, 255):
-            return Game.BT.track
+            return BT.TRACK
         else:
-            return Game.BT.snow
+            return BT.SNOW
 
     def is_on_track(self, x, y):
-        return self.get_track_pixel(x, y) == Game.BT.track
+        return self.get_track_pixel(x, y) == BT.TRACK
 
     def add_checkpoint(self, pos):
         self.checkpoints.append(pos)
@@ -169,10 +168,10 @@ class Player:
                 y = dis * sin(ang) + self.get_center()[1]
                 val = self.game.get_track_pixel(int(x), int(y))
                 col = (0, 0, 0, 255)
-                if val == Game.BT.track:
+                if val == BT.TRACK:
                     col = pygame.Color("green")
-                if val == Game.BT.snow:
+                if val == BT.SNOW:
                     col = pygame.Color("red")
-                if val == Game.BT.wall:
+                if val == BT.WALL:
                     col = pygame.Color("white")
                 pygame.draw.circle(surface, col, (int(x), int(y)), 5)

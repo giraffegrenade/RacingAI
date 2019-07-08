@@ -14,7 +14,7 @@ if __name__ == '__main__':
     pygame.display.set_mode((SIZE_X, SIZE_Y))
 
     pygame.display.set_caption('racingGame')
-    background = pygame.image.load("racetrack3.png").convert_alpha()
+    background = pygame.image.load("racetrack.png").convert_alpha()
 
     screen = pygame.display.set_mode((SIZE_X, SIZE_Y))
     clock = pygame.time.Clock()

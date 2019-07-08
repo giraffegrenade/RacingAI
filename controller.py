@@ -3,9 +3,6 @@ from enum import Enum
 
 
 class Controller(ABC):
-
-    BT = Enum('BT', 'track snow wall')
-
     """
     @return
     """
